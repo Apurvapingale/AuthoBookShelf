@@ -14,18 +14,18 @@ import (
 var jwtKey = []byte("supersecretkeyvdjwbdhwjdbiwuhdqwihdiq")
 
 type JWTClaim struct {
-	Id     uint   `json:"id"`
+	Id    uint   `json:"id"`
 	Role  string `json:"role"`
-	Email  string `json:"email"`
+	Email string `json:"email"`
 	jwt.RegisteredClaims
 }
 
 func GenerateJWT(id uint, role string, email string) (tokenString string, err error) {
-	//default exp time for jwt token is 24 hours 
+	//default expiration time for jwt token is 24 hours
 	expirationTime := jwt.NewNumericDate(time.Now().Add(24 * time.Hour))
 	claims := &JWTClaim{
-		Id:     id,
-		Email:  email,
+		Id:    id,
+		Email: email,
 		Role:  role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: expirationTime,
@@ -81,21 +81,19 @@ func ValidateToken(signedToken string, role string) (err error) {
 	}
 	//get user data from db and validite its status wheather it is active or not also validate the role of the user
 
-    db := config.GetDB()
-   var user models.User
-   db.Where("id=?", claims.Id).Find(&user)
-   if user.Status != "ACTIVE" {
-	   err = errors.New("user is not active")
-	   log.Println("user is not active", err.Error())
-	   return
-	      }
-		     if user.Role != role {
-				 err = errors.New("user is not authorized")
-				 log.Println("user is not authorized", err.Error())
-				 return
-				}
-
-
+	db := config.GetDB()
+	var user models.User
+	db.Where("id=?", claims.Id).Find(&user)
+	if user.Status != "ACTIVE" {
+		err = errors.New("user is not active")
+		log.Println("user is not active", err.Error())
+		return
+	}
+	if user.Role != role {
+		err = errors.New("user is not authorized")
+		log.Println("user is not authorized", err.Error())
+		return
+	}
 
 	return
 }

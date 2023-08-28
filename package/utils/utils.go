@@ -17,7 +17,6 @@ func ParseBody(r *http.Request, x interface{}) error {
 	}
 	return nil
 }
-
 func Response(w http.ResponseWriter, data map[string]interface{}) {
 	w.Header().Set("Content-Type", "pkglication/json")
 	json.NewEncoder(w).Encode(data)
