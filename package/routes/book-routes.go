@@ -10,6 +10,7 @@ import (
 // registerbookstore function is used to register the routes
 var RegisterBookStoreRoutes = func(router *mux.Router) {
 
+	//all book routes have the group prefix /book
 	bookRoutes := router.PathPrefix("/book").Subrouter()
 
 	bookRoutes.Use(middleware.ValidateAdmin)
